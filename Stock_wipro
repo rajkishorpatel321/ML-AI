@@ -1,0 +1,24 @@
+import numpy as np
+import pandas as pd
+import sklearn 
+import matplotlib.pyplot as plt
+
+df = pd.read_csv('data_wipro.csv')
+
+X = df.drop(['Series','Symbol','Date','Average Price'],axis=1)
+y=df['Average Price']
+
+from sklearn.model_selection import train_test_split
+X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=0.33,random_state=42)
+
+from sklearn.linear_model import LinearRegression
+lm = LinearRegression()
+lm.fit(X_train,y_train)
+pred_test = lm.predict(X_test)
+
+plt.scatter(y_test,pred_test,color='red')
+plt.plot(np.unique(y_test),
+        np.poly1d(np.polyfit(y_test,pred_test,1))(np.unique(y_test)),
+        linewidth=3)
+plt.xlabel('actual')
+plt.ylabel('predict')
